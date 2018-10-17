@@ -26,6 +26,7 @@ app.use(authMiddleware(secret));
 // Registrar rutas
 routes(app, (err) => {
   if (err) {
+    console.error("ERROR : "+err);
     throw err;
   }
 
