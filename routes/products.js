@@ -11,7 +11,24 @@ const {
 const omitPrivateProps = createPrivatePropsFilter(['password']);
 
 module.exports = (app, next) => {
-  
+    app.param('productId', (req, res, next, id) => {
+        console.log('buscar' + id)
+        return Product.findById(id)
+            .then((doc) => {
+                console.log(doc)
+                if (!doc) {
+                    return next(404);
+                }
+                Object.assign(req, { product: doc });
+                return next();
+            })
+            .catch(next);
+    });
+    app.get('/products/:productId', requireAuth, (req, resp) => {
+        return resp.json(
+            omitPrivateProps(req.product),
+        )
+    });
     app.get('/products', requireAuth, (req, resp) => {
         Product.paginate({}, getPaginationParamsFromRequest(req), (err, results) => {
             if (err) {
@@ -25,8 +42,6 @@ module.exports = (app, next) => {
         });
     });
 
- 
-
     app.post('/products', requireAuth,  (req, resp, next) => {
         const { nombre, precio } = req.body;
 
@@ -39,11 +54,9 @@ module.exports = (app, next) => {
                     : next(500)
             ));
     });
-/*
-    app.get('/products/:id', requireAuth, (req, resp) => resp.json(
-        omitPrivateProps(req.user),
-    ));
 
+   
+/*
     app.delete('/products/:id', requireAuth, (req, resp, next) => {
         req.user.remove()
             .then(doc => resp.json(omitPrivateProps(doc)))

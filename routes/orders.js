@@ -12,10 +12,9 @@ const omitPrivateProps = createPrivatePropsFilter(['password']);
 
 module.exports = (app, next) => {
 
-    app.param('id', (req, res, next, id) => {
-        const { idOrder } = req;
-console.log('id'+id)
-        return Order.findByIdOrEmail(id)
+    app.param('orderId', (req, res, next, id) => {
+        console.log('buscar' + orderId)
+        return Order.findById(orderId)
             .then((doc) => {
                 if (!doc) {
                     return next(404);
@@ -23,7 +22,10 @@ console.log('id'+id)
                 Object.assign(req, { order: doc });
                 next();
             })
-            .catch(next);
+            .catch((e)=>{
+                console.log('error en param' + e)
+                next
+            });
     });
 
     app.get('/orders', requireAuth, (req, resp) => {
@@ -38,14 +40,13 @@ console.log('id'+id)
             resp.json(results.docs.map(omitPrivateProps));
         });
     });
-
-    app.get('/orders/:id', requireAuth, (req, resp) => resp.json(
-                omitPrivateProps(req.user),
+    //req.params.id
+    app.get('/orders/:orderId', requireAuth, (req, resp) => resp.json(
+                omitPrivateProps(req.order),
     ));
 
     app.post('/orders', requireAuth, (req, resp, next) => {
         const { cliente, pedido } = req.body;
-
         Order.create({ cliente, pedido })
             .then(doc => resp.json(omitPrivateProps(doc)))
             .catch(err => (
@@ -56,7 +57,7 @@ console.log('id'+id)
             ));
     });
 
-    app.delete('/orders/:id', requireAuth, (req, resp, next) => {
+    app.delete('/orders/:orderId', requireAuth, (req, resp, next) => {
         req.order.remove()
             .then(doc => resp.json(omitPrivateProps(doc)))
             .catch(next);

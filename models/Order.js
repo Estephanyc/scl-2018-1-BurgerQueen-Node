@@ -9,11 +9,7 @@ const OrderSchema = new mongoose.Schema({
         unique: false,
         required: true,
     },
-    pedido: {
-        type: String,
-        unique: false,
-        required: true,
-    },
+    pedido: [String],
 });
 OrderSchema.plugin(mongoosePaginate);
 
