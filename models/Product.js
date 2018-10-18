@@ -6,7 +6,6 @@ const mongoosePaginate = require('mongoose-paginate');
 const ProductSchema = new mongoose.Schema({
     nombre: {
         type: String,
-        unique: true,
         required: true,
     },
     precio: {

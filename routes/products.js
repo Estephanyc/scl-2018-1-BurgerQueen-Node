@@ -33,6 +33,7 @@ module.exports = (app, next) => {
         Product.create({ nombre, precio })
             .then(doc => resp.json(omitPrivateProps(doc)))
             .catch(err => (
+                console.log(err)
                 (/duplicate key/.test(err.message))
                     ? next(403)
                     : next(500)
