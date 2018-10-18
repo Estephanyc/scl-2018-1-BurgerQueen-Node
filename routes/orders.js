@@ -13,8 +13,7 @@ const omitPrivateProps = createPrivatePropsFilter(['password']);
 module.exports = (app, next) => {
 
     app.param('orderId', (req, res, next, id) => {
-        console.log('buscar' + orderId)
-        return Order.findById(orderId)
+        return Order.findById(id)
             .then((doc) => {
                 if (!doc) {
                     return next(404);
@@ -59,6 +58,15 @@ module.exports = (app, next) => {
 
     app.delete('/orders/:orderId', requireAuth, (req, resp, next) => {
         req.order.remove()
+            .then(doc => resp.json(omitPrivateProps(doc)))
+            .catch(next);
+    });
+
+    app.put('/orders/:orderId', requireAuth, (req, resp, next) => {
+
+        Object.assign(req.order, req.body);
+
+        req.order.save()
             .then(doc => resp.json(omitPrivateProps(doc)))
             .catch(next);
     });

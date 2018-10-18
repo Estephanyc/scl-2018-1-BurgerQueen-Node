@@ -54,14 +54,18 @@ module.exports = (app, next) => {
                     : next(500)
             ));
     });
-
-   
-/*
-    app.delete('/products/:id', requireAuth, (req, resp, next) => {
-        req.user.remove()
+    app.delete('/products/:productId', requireAuth, (req, resp, next) => {
+        req.product.remove()
             .then(doc => resp.json(omitPrivateProps(doc)))
             .catch(next);
-    }); */
+    });
+    app.put('/products/:productId', requireAuth, (req, resp, next) => {
 
+        Object.assign(req.product, req.body);
+
+        req.product.save()
+            .then(doc => resp.json(omitPrivateProps(doc)))
+            .catch(next);
+    });
     return next();
 };
