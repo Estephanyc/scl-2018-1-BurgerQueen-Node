@@ -3,6 +3,7 @@
 Es una api diseñada para el proyecto https://github.com/Estephanyc/burger-queen, que permite consultar, agregar, editar y eliminar información correspondiente a pedidos, productos y usuarios de un restaurante.
 
 [API Docs](https://documenter.getpostman.com/view/1721181/RWgozeom)
+[API](https://bq-node-ybxlkxbnpf.now.sh/)
 
 ### HTTP API
 
